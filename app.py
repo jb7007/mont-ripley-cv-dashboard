@@ -2,6 +2,7 @@ import pandas as pd
 from dash import Dash, html
 import dash_ag_grid as dag
 import dash_bootstrap_components as dbc
+from datetime import datetime
 
 # ---------- Data loading ----------
 
@@ -11,7 +12,7 @@ def load_raw_data():
 
 
 def build_dashboard_data(raw_df):
-    """Convery raw detection data into the cleaned columns used by the dashboard table."""
+    """Convert raw detection data into the cleaned columns used by the dashboard table."""
     dashboard_df = pd.DataFrame({
         "timestamp": raw_df["time_sec"],
         "camera": "mont_ripley_cam_1",
@@ -40,12 +41,16 @@ latest_frame = raw_df["frame"].max()
 # count how many detections appear in that most recent frame.
 visible_now = int((raw_df["frame"] == latest_frame).sum())
 
-# demo metric: total number of detections in the csv
+# demo metric: total number of detections in the CSV
 cumulative_detections_demo = int(len(raw_df))
 
 # placeholder values until tracking/zone logic is added 
 on_lift_now = "—"
 off_lift_now = "—"
+
+current_dt = datetime.now()
+current_date = current_dt.strftime("%B %d, %Y")
+current_time = current_dt.strftime("%I:%M:%S %p")
 
 # ---------- Dash app setup ----------
 app = Dash(external_stylesheets=[dbc.themes.DARKLY])
@@ -65,8 +70,8 @@ app.layout = dbc.Container(
                 ),
                 dbc.Col(
                     [
-                        html.Div("Date: TODO", className="datetime-text"),
-                        html.Div("Time: TODO", className="datetime-text"),
+                        html.Div(f"Date: {current_date}", className="datetime-text"),
+                        html.Div(f"Time: {current_time}", className="datetime-text"),
                     ],
                     md=4,
                     className="text-md-end"
